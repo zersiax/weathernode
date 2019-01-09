@@ -1,6 +1,6 @@
 const request = require('request');
 const config = require('./config')
-var geocodeAddress = (address) => {
+var geocodeAddress = (address, callback) => {
   var encodedAddress = encodeURI(address);
   request({
 
@@ -9,14 +9,16 @@ var geocodeAddress = (address) => {
 
   }, (error, response, body) => {
     if (error) {
-      console.log("Google doesn't like us. We don't know why, either");
+      callback("Google doesn't like us. We don't know why, either");
     } else if (body.status === "ZERO_RESULTS") {
-      console.log("Uhm ...it seems you're not on planet Earth. Google doesn't do the moon yet");
+      callback("Uhm ...it seems you're not on planet Earth. Google doesn't do the moon yet");
 
     } else if (body.status === "OK") {
-      console.log(`Address: ${body.results[0].formatted_address}`);
-      console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
-      console.log(`Longitude: ${body.results[0].geometry.location.lng}`);
+      callback(undefined, {
+        address: body.results[0].formatted_address,
+        latitude: body.results[0].geometry.location.lat,
+        longitude: body.results[0].geometry.location.lng
+      });
     }
 
   });

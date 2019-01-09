@@ -15,8 +15,15 @@ request({
   json: true
 
 }, (error, response, body) => {
-  console.log(`Address: ${body.results[0].formatted_address}`);
-  console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
-  console.log(`Longitude: ${body.results[0].geometry.location.lng}`);
+  if (error) {
+    console.log("Google doesn't like us. We don't know why, either");
+  } else if (body.status === "ZERO_RESULTS") {
+    console.log("Uhm ...it seems you're not on planet Earth. Google doesn't do the moon yet");
+
+  } else if (body.status === "OK") {
+    console.log(`Address: ${body.results[0].formatted_address}`);
+    console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
+    console.log(`Longitude: ${body.results[0].geometry.location.lng}`);
+  }
 
 });
